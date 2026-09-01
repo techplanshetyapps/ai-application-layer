@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Gemma Sci/Tech RAG Assistant — AG News</title>
+<style>
+  :root {
+    --primary: #4e9fda; --primary-hover: #3d84c4; --accent: #2d5a8f;
+    --card-bg: oklch(28% 0.06 250 / 0.66); --text-main: #f8faf9;
+    --text-muted: #cbd5e1; --border-color: rgba(255,255,255,0.15);
+  }
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0;
+    background: linear-gradient(160deg,#0b1220,#12203a 60%,#0b1220);
+    color: var(--text-main); min-height: 100vh;
+  }
+  .container { max-width: 980px; margin: 40px auto; background: var(--card-bg);
+    backdrop-filter: blur(8px); padding: 35px; border-radius: 16px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.35); border: 1px solid var(--border-color); }
+  header { display:flex; justify-content:space-between; align-items:center;
+    border-bottom: 2px solid var(--border-color); padding-bottom:15px; margin-bottom:25px; flex-wrap: wrap; gap: 10px;}
+  h2 { margin:0; font-size:1.7rem; }
+  .badge { background: rgba(45,90,143,0.8); padding:6px 14px; border-radius:20px; font-weight:600; font-size:.85rem; border:1px solid rgba(255,255,255,.2);}
+  .panel { background: rgba(0,0,0,0.25); padding:20px; border-radius:12px; border:1px solid var(--border-color); margin-bottom:20px;}
+  .row { display:flex; gap:12px; flex-wrap: wrap; align-items:center;}
+  input, select, button, textarea { padding:12px 14px; font-size:15px; border:1px solid var(--border-color);
+    border-radius:8px; background: rgba(255,255,255,0.92); color:#1c2434; }
+  textarea { width:100%; resize:vertical; min-height:60px; box-sizing:border-box;}
+  button { background: var(--primary); color:white; border:none; cursor:pointer; font-weight:bold;}
+  button:hover { background: var(--primary-hover); }
+  button:disabled { opacity:.5; cursor:not-allowed; }
+  .answer { white-space: pre-wrap; line-height:1.5; }
+  .sources { margin-top:14px; font-size:.9rem; color: var(--text-muted); }
+  .source-item { padding:6px 0; border-top: 1px solid var(--border-color); }
+  .status { font-size:.9rem; color: var(--text-muted); margin-top:8px;}
+  .loading { display:none; font-weight:600; margin:10px 0; text-align:center; background: rgba(45,90,143,.8); padding:10px; border-radius:8px;}
+</style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <h2>🤖 Gemma Sci/Tech RAG Assistant</h2>
+    <div id="statusBadge" class="badge">Checking status…</div>
+  </header>
+
+  <div class="panel">
+    <h3 style="margin-top:0;">1. Ingest AG News (Sci/Tech only)</h3>
+    <p class="status">Pulls rows directly from Hugging Face's <code>ag_news</code> dataset (label = Sci/Tech), chunks them with LlamaIndex, embeds them, and stores vectors in ChromaDB.</p>
+    <div class="row">
+      <select id="splitSelect">
+        <option value="test">test split (7.6k rows)</option>
+        <option value="train">train split (120k rows)</option>
+      </select>
+      <input type="number" id="limitInput" value="200" min="10" max="2000" style="width:100px" />
+      <button id="ingestBtn">Ingest Sci/Tech Articles</button>
+    </div>
+    <div id="ingestLoading" class="loading">⏳ Fetching from Hugging Face and embedding…</div>
+    <div id="ingestResult" class="status"></div>
+  </div>
+
+  <div class="panel">
+    <h3 style="margin-top:0;">2. Ask the RAG assistant</h3>
+    <textarea id="questionInput" placeholder="e.g. What are the recent developments in AI chips mentioned in these articles?"></textarea>
+    <div class="row" style="margin-top:10px;">
+      <button id="askBtn">Ask Gemma</button>
+    </div>
+    <div id="queryLoading" class="loading">⏳ Retrieving context and asking Gemma…</div>
+    <div id="answerBox" class="panel" style="display:none;">
+      <div class="answer" id="answerText"></div>
+      <div class="sources" id="sourcesBox"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const statusBadge = document.getElementById('statusBadge');
+  const ingestBtn = document.getElementById('ingestBtn');
+  const ingestLoading = document.getElementById('ingestLoading');
+  const ingestResult = document.getElementById('ingestResult');
+  const askBtn = document.getElementById('askBtn');
+  const queryLoading = document.getElementById('queryLoading');
+  const answerBox = document.getElementById('answerBox');
+  const answerText = document.getElementById('answerText');
+  const sourcesBox = document.getElementById('sourcesBox');
+
+  async function loadHealth() {
+    try {
+      const res = await fetch('/api/health');
+      const data = await res.json();
+      statusBadge.textContent = `Model: ${data.gemmaModel} · Vectors: ${data.vectorCount ?? 'n/a'}`;
+    } catch {
+      statusBadge.textContent = 'Status unavailable';
+    }
+  }
+
+  ingestBtn.addEventListener('click', async () => {
+    ingestLoading.style.display = 'block';
+    ingestResult.textContent = '';
+    ingestBtn.disabled = true;
+    try {
+      const res = await fetch('/api/ingest', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          limit: parseInt(document.getElementById('limitInput').value, 10),
+          split: document.getElementById('splitSelect').value,
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Ingest failed');
+      ingestResult.textContent = data.message;
+      loadHealth();
+    } catch (err) {
+      ingestResult.textContent = 'Error: ' + err.message;
+    } finally {
+      ingestLoading.style.display = 'none';
+      ingestBtn.disabled = false;
+    }
+  });
+
+  askBtn.addEventListener('click', async () => {
+    const question = document.getElementById('questionInput').value.trim();
+    if (!question) return;
+    queryLoading.style.display = 'block';
+    answerBox.style.display = 'none';
+    askBtn.disabled = true;
+    try {
+      const res = await fetch('/api/query', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ question }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Query failed');
+      answerText.textContent = data.answer;
+      sourcesBox.innerHTML = '<strong>Sources:</strong>' + data.sources.map(
+        (s, i) => `<div class="source-item">[${i + 1}] ${s.title || s.sourceId}</div>`
+      ).join('');
+      answerBox.style.display = 'block';
+    } catch (err) {
+      answerText.textContent = 'Error: ' + err.message;
+      sourcesBox.innerHTML = '';
+      answerBox.style.display = 'block';
+    } finally {
+      queryLoading.style.display = 'none';
+      askBtn.disabled = false;
+    }
+  });
+
+  loadHealth();
+</script>
+</body>
+</html>
