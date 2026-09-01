@@ -1,0 +1,120 @@
+8.5s 1 0.00s - Debugger warning: It seems that frozen modules are being used, which may
+8.5s 2 0.00s - make the debugger miss breakpoints. Please pass -Xfrozen_modules=off
+8.5s 3 0.00s - to python to disable frozen modules.
+8.5s 4 0.00s - Note: Debugging will proceed. Set PYDEVD_DISABLE_FILE_VALIDATION=1 to disable this validation.
+9.2s 5 0.00s - Debugger warning: It seems that frozen modules are being used, which may
+9.2s 6 0.00s - make the debugger miss breakpoints. Please pass -Xfrozen_modules=off
+9.2s 7 0.00s - to python to disable frozen modules.
+9.2s 8 0.00s - Note: Debugging will proceed. Set PYDEVD_DISABLE_FILE_VALIDATION=1 to disable this validation.
+16.3s 9 [?25l   [90m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m0.0/12.1 MB[0m [31m?[0m eta [36m-:--:--[0m
+[2K   [90m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m0.1/12.1 MB[0m [31m3.2 MB/s[0m eta [36m0:00:04[0m
+[2K   [91m╸[0m[90m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m0.2/12.1 MB[0m [31m2.6 MB/s[0m eta [36m0:00:05[0m
+[2K   [91m━[0m[90m╺[0m[90m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m0.3/12.1 MB[0m [31m3.2 MB/s[0m eta [36m0:00:04[0m
+[2K   [91m━[0m[91m╸[0m[90m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m0.6/12.1 MB[0m [31m4.2 MB/s[0m eta [36m0:00:03[0m
+[2K   [91m━━━[0m[90m╺[0m[90m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m1.0/12.1 MB[0m [31m6.4 MB/s[0m eta [36m0:00:02[0m
+[2K   [91m━━━━━━[0m[91m╸[0m[90m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m2.1/12.1 MB[0m [31m10.2 MB/s[0m eta [36m0:00:01[0m
+[2K   [91m━━━━━━━━━━━━[0m[90m╺[0m[90m━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m3.6/12.1 MB[0m [31m15.0 MB/s[0m eta [36m0:00:01[0m
+[2K   [91m━━━━━━━━━━━━━━━━━━[0m[91m╸[0m[90m━━━━━━━━━━━━━━━━━━━━━[0m [32m5.6/12.1 MB[0m [31m20.3 MB/s[0m eta [36m0:00:01[0m
+[2K   [91m━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m[91m╸[0m[90m━━━━━━━━━━━[0m [32m8.6/12.1 MB[0m [31m27.6 MB/s[0m eta [36m0:00:01[0m
+[2K   [91m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m[91m╸[0m [32m12.1/12.1 MB[0m [31m73.4 MB/s[0m eta [36m0:00:01[0m
+[2K   [91m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m[91m╸[0m [32m12.1/12.1 MB[0m [31m73.4 MB/s[0m eta [36m0:00:01[0m
+[2K   [90m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m12.1/12.1 MB[0m [31m49.6 MB/s[0m eta [36m0:00:00[0m
+16.4s 10 [?25h[?25l   [90m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m0.0/389.2 kB[0m [31m?[0m eta [36m-:--:--[0m
+[2K   [90m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m389.2/389.2 kB[0m [31m16.6 MB/s[0m eta [36m0:00:00[0m
+16.5s 11 [?25h[?25l   [90m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m0.0/559.1 kB[0m [31m?[0m eta [36m-:--:--[0m
+[2K   [90m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m559.1/559.1 kB[0m [31m21.6 MB/s[0m eta [36m0:00:00[0m
+16.6s 12 [?25h[?25l   [90m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m0.0/739.8 kB[0m [31m?[0m eta [36m-:--:--[0m
+[2K   [90m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m739.8/739.8 kB[0m [31m27.7 MB/s[0m eta [36m0:00:00[0m
+16.9s 13 [?25h[?25l   [90m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m0.0/18.8 MB[0m [31m?[0m eta [36m-:--:--[0m
+[2K   [91m━━━━━━━━[0m[91m╸[0m[90m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m4.1/18.8 MB[0m [31m220.8 MB/s[0m eta [36m0:00:01[0m
+[2K   [91m━━━━━━━━━━━━━━[0m[90m╺[0m[90m━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m6.8/18.8 MB[0m [31m99.7 MB/s[0m eta [36m0:00:01[0m
+[2K   [91m━━━━━━━━━━━━━━━━━━━━━[0m[90m╺[0m[90m━━━━━━━━━━━━━━━━━━[0m [32m10.0/18.8 MB[0m [31m100.0 MB/s[0m eta [36m0:00:01[0m
+[2K   [91m━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m[90m╺[0m[90m━━━━━━━━━━━━[0m [32m12.7/18.8 MB[0m [31m81.6 MB/s[0m eta [36m0:00:01[0m
+[2K   [91m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m[90m╺[0m[90m━━━━━━━[0m [32m15.0/18.8 MB[0m [31m92.0 MB/s[0m eta [36m0:00:01[0m
+[2K   [91m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m[91m╸[0m [32m18.8/18.8 MB[0m [31m91.4 MB/s[0m eta [36m0:00:01[0m
+[2K   [91m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m[91m╸[0m [32m18.8/18.8 MB[0m [31m91.4 MB/s[0m eta [36m0:00:01[0m
+[2K   [91m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m[91m╸[0m [32m18.8/18.8 MB[0m [31m91.4 MB/s[0m eta [36m0:00:01[0m
+[2K   [90m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m18.8/18.8 MB[0m [31m51.7 MB/s[0m eta [36m0:00:00[0m
+17.7s 14 [?25h[?25l   [90m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m0.0/43.1 MB[0m [31m?[0m eta [36m-:--:--[0m
+[2K   [91m━[0m[90m╺[0m[90m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m1.3/43.1 MB[0m [31m185.2 MB/s[0m eta [36m0:00:01[0m
+[2K   [91m━━━━━[0m[90m╺[0m[90m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m5.6/43.1 MB[0m [31m88.1 MB/s[0m eta [36m0:00:01[0m
+[2K   [91m━━━━━━━━[0m[91m╸[0m[90m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m9.3/43.1 MB[0m [31m80.2 MB/s[0m eta [36m0:00:01[0m
+[2K   [91m━━━━━━━━━━[0m[90m╺[0m[90m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m11.3/43.1 MB[0m [31m73.8 MB/s[0m eta [36m0:00:01[0m
+[2K   [91m━━━━━━━━━━━━━[0m[90m╺[0m[90m━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m14.2/43.1 MB[0m [31m79.7 MB/s[0m eta [36m0:00:01[0m
+[2K   [91m━━━━━━━━━━━━━━━[0m[90m╺[0m[90m━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m16.4/43.1 MB[0m [31m78.8 MB/s[0m eta [36m0:00:01[0m
+[2K   [91m━━━━━━━━━━━━━━━━━━[0m[91m╸[0m[90m━━━━━━━━━━━━━━━━━━━━━[0m [32m20.0/43.1 MB[0m [31m90.0 MB/s[0m eta [36m0:00:01[0m
+[2K   [91m━━━━━━━━━━━━━━━━━━━━━[0m[91m╸[0m[90m━━━━━━━━━━━━━━━━━━[0m [32m23.6/43.1 MB[0m [31m93.6 MB/s[0m eta [36m0:00:01[0m
+[2K   [91m━━━━━━━━━━━━━━━━━━━━━━━━[0m[91m╸[0m[90m━━━━━━━━━━━━━━━[0m [32m26.6/43.1 MB[0m [31m99.2 MB/s[0m eta [36m0:00:01[0m
+[2K   [91m━━━━━━━━━━━━━━━━━━━━━━━━━━[0m[91m╸[0m[90m━━━━━━━━━━━━━[0m [32m29.0/43.1 MB[0m [31m85.7 MB/s[0m eta [36m0:00:01[0m
+[2K   [91m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m[90m╺[0m[90m━━━━━━━━━━[0m [32m31.5/43.1 MB[0m [31m92.6 MB/s[0m eta [36m0:00:01[0m
+[2K   [91m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m[91m╸[0m[90m━━━━━━━[0m [32m35.3/43.1 MB[0m [31m93.6 MB/s[0m eta [36m0:00:01[0m
+[2K   [91m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m[91m╸[0m[90m━━━━[0m [32m38.6/43.1 MB[0m [31m95.7 MB/s[0m eta [36m0:00:01[0m
+[2K   [91m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m[90m╺[0m[90m━[0m [32m41.5/43.1 MB[0m [31m84.4 MB/s[0m eta [36m0:00:01[0m
+[2K   [91m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m[91m╸[0m [32m43.1/43.1 MB[0m [31m80.9 MB/s[0m eta [36m0:00:01[0m
+[2K   [91m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m[91m╸[0m [32m43.1/43.1 MB[0m [31m80.9 MB/s[0m eta [36m0:00:01[0m
+[2K   [91m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m[91m╸[0m [32m43.1/43.1 MB[0m [31m80.9 MB/s[0m eta [36m0:00:01[0m
+[2K   [91m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m[91m╸[0m [32m43.1/43.1 MB[0m [31m80.9 MB/s[0m eta [36m0:00:01[0m
+[2K   [91m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m[91m╸[0m [32m43.1/43.1 MB[0m [31m80.9 MB/s[0m eta [36m0:00:01[0m
+[2K   [91m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m[91m╸[0m [32m43.1/43.1 MB[0m [31m80.9 MB/s[0m eta [36m0:00:01[0m
+[2K   [90m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m43.1/43.1 MB[0m [31m31.7 MB/s[0m eta [36m0:00:00[0m
+17.8s 15 [?25h[?25l   [90m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m0.0/516.0 kB[0m [31m?[0m eta [36m-:--:--[0m
+[2K   [90m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m516.0/516.0 kB[0m [31m24.0 MB/s[0m eta [36m0:00:00[0m
+17.9s 16 [?25h[?25l   [90m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m0.0/3.3 MB[0m [31m?[0m eta [36m-:--:--[0m
+[2K   [91m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m[91m╸[0m [32m3.3/3.3 MB[0m [31m234.9 MB/s[0m eta [36m0:00:01[0m
+[2K   [90m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m3.3/3.3 MB[0m [31m72.4 MB/s[0m eta [36m0:00:00[0m
+36.3s 17 [?25hSuccessfully logged in to Hugging Face Hub!
+50.0s 18 Loaded 300 Sci/Tech articles out of 7600 total AG News test rows.
+99.9s 19 Embedding matrix shape: (300, 384)
+99.9s 20 FAISS index built with 300 vectors of dimension 384.
+100.0s 21 0.472  Intel Delays Launch of Projection TV Chip In another product postponement, semiconductor giant Intel Corp. said it won't be offering a chip for projection TVs by the end of 2004 as it had announced earlier this year.
+100.0s 22 0.435  Intel drops prices on computer chips SAN FRANCISCO - Intel Corp. has cut prices on its computer chips by as much as 35 percent, though analysts on Monday said the cuts were probably unrelated to swelling inventories of the world #39;s largest chip maker.
+100.0s 23 0.406  Intel Shrinks Transistor Size By 30 pinkUZI writes  quot;Intel will announce that it has crammed 500 million transistors on to a single memory chip, shrinking them in size by 30.
+178.8s 24 Loaded google/gemma-2-2b-it on cpu.
+476.5s 25 Q: What recent Sci/Tech stories mention AI chips or semiconductors?
+476.5s 26 
+476.5s 27 Gemma's answer:
+476.5s 28 The provided text mentions AMD's 64-bit 90-nanometer (nm) chips and Intel's shrinking transistor size. [1], [5]
+476.5s 29 
+476.5s 30 It also mentions silicon carbide (SiC) as a potential semiconductor material. [2]
+476.5s 31 
+476.5s 32 
+476.5s 33 Sources considered:
+476.5s 34 [1] (0.476) AMD Ships Notebook Chips It wasn #39;t the first to go small, and it won #39;t be the biggest producer, but AMD #39;s (Quote, Chart) 64-bit 90-nanometer (nm) chips are expected to make waves in the semiconductor pool.
+476.5s 35 [2] (0.454) Toyota reports a silicon carbide breakthrough Move over silicon chips, there is a new semiconductor king on the horizon. Silicon carbide #39;s (SiC) potential has been known since the 1950 #39;s, but the properties that make is attractive also make it hard to work with.
+476.5s 36 [3] (0.424) IBM Chips May Someday Heal Themselves New technology applies electrical fuses to help identify and repair faults.
+476.5s 37 [4] (0.417) Intel drops prices on computer chips SAN FRANCISCO - Intel Corp. has cut prices on its computer chips by as much as 35 percent, though analysts on Monday said the cuts were probably unrelated to swelling inventories of the world #39;s largest chip maker.
+476.5s 38 [5] (0.412) Intel Shrinks Transistor Size By 30 pinkUZI writes  quot;Intel will announce that it has crammed 500 million transistors on to a single memory chip, shrinking them in size by 30.
+786.4s 39 ================================================================================
+786.4s 40 Q: Have there been any router or network security vulnerabilities reported?
+786.4s 41 [1] Cisco Systems issued a security advisory warning that some networks using its routers may be vulnerable to denial-of-service attacks.
+786.4s 42 [4] Industry cyber security standards fail to reach some of the most vulnerable components of the power grid.
+786.4s 43 
+1280.7s 44 ================================================================================
+1280.7s 45 Q: What's happening with space launches or satellites?
+1280.7s 46 The answer is not provided in the given context snippets.
+1280.7s 47 
+1280.7s 48 Here's why:
+1280.7s 49 
+1280.7s 50 * **Snippet 1** focuses on the safety improvements of the space shuttle.
+1280.7s 51 * **Snippet 2** discusses a space probe and a helicopter, but doesn't mention space launches.
+1280.7s 52 * **Snippet 3** talks about the Da Vinci Project and their difficulties with paperwork and insurance for a homemade spacecraft launch.
+1280.7s 53 * **Snippet 4** mentions NASA's confidence in solving debris issues related to the space shuttle.
+1280.7s 54 
+1280.7s 55 None of these snippets offer information about the general status of space launches or satellites.
+1280.7s 56 
+1437.0s 57 ================================================================================
+1437.0s 58 Q: Is there any news about cryptocurrency regulation?
+1437.0s 59 No, there is no news about cryptocurrency regulation in the provided context.
+1437.0s 60 
+1437.2s 61 Loading AG News dataset...
+1440.4s 62 Created 'articles' list with 1000 items successfully!
+1440.4s 63 File does not exist!
+1440.4s 64 Successfully wrote data to scitech_articles_export.json!
+1446.6s 65 /usr/local/lib/python3.12/dist-packages/mistune.py:435: SyntaxWarning: invalid escape sequence '\|'
+1446.6s 66 cells[i][c] = re.sub('\\\\\|', '|', cell)
+1446.8s 67 /usr/local/lib/python3.12/dist-packages/nbconvert/filters/filter_links.py:36: SyntaxWarning: invalid escape sequence '\_'
+1446.8s 68 text = re.sub(r'_', '\_', text) # Escape underscores in display text
+1447.6s 69 [NbConvertApp] Converting notebook __notebook__.ipynb to notebook
+1448.0s 70 [NbConvertApp] Writing 394461 bytes to __notebook__.ipynb
+1450.5s 71 [NbConvertApp] Converting notebook __notebook__.ipynb to html
+1451.4s 72 [NbConvertApp] Writing 614843 bytes to __results__.html
