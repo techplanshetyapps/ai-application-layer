@@ -10,13 +10,14 @@
     "ingest": "node scripts/ingest.js"
   },
   "dependencies": {
-    "ai": "^4.0.0",
     "@ai-sdk/google": "^1.0.0",
+    "@aws-crypto/sha256-js": "^5.2.0",
+    "ai": "^4.0.0",
     "chromadb": "^1.9.2",
-    "llamaindex": "^0.8.29",
-    "express": "^4.19.2",
     "cors": "^2.8.5",
-    "dotenv": "^16.4.5",
+    "dotenv": "^16.6.1",
+    "express": "^4.19.2",
+    "llamaindex": "^0.8.29",
     "node-fetch": "^2.7.0"
   },
   "engines": {
