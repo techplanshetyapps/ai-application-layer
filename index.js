@@ -30,7 +30,7 @@ app.get('/api/health', async (req, res) => {
 // -------------------------------------------------------------------
 app.post('/api/ingest', async (req, res) => {
   try {
-    const limit = Math.min(parseInt(req.body?.limit, 10) || 200, 2000);
+    const limit = Math.min(parseInt(req.body?.limit, 10) || 10, 2000);
     const split = req.body?.split === 'train' ? 'train' : 'test';
 
     const articles = await loadSciTechArticles(limit, split);
