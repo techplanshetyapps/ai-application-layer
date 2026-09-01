@@ -4,76 +4,176 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Gemma Sci/Tech RAG Assistant — AG News</title>
-<style>
-  :root {
-    --primary: #4e9fda; --primary-hover: #3d84c4; --accent: #2d5a8f;
-    --card-bg: oklch(28% 0.06 250 / 0.66); --text-main: #f8faf9;
-    --text-muted: #cbd5e1; --border-color: rgba(255,255,255,0.15);
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        fontFamily: {
+          sans: ['Plus Jakarta Sans', 'sans-serif'],
+        },
+      }
+    }
   }
-  body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0;
-    background: linear-gradient(160deg,#0b1220,#12203a 60%,#0b1220);
-    color: var(--text-main); min-height: 100vh;
-  }
-  .container { max-width: 980px; margin: 40px auto; background: var(--card-bg);
-    backdrop-filter: blur(8px); padding: 35px; border-radius: 16px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.35); border: 1px solid var(--border-color); }
-  header { display:flex; justify-content:space-between; align-items:center;
-    border-bottom: 2px solid var(--border-color); padding-bottom:15px; margin-bottom:25px; flex-wrap: wrap; gap: 10px;}
-  h2 { margin:0; font-size:1.7rem; }
-  .badge { background: rgba(45,90,143,0.8); padding:6px 14px; border-radius:20px; font-weight:600; font-size:.85rem; border:1px solid rgba(255,255,255,.2);}
-  .panel { background: rgba(0,0,0,0.25); padding:20px; border-radius:12px; border:1px solid var(--border-color); margin-bottom:20px;}
-  .row { display:flex; gap:12px; flex-wrap: wrap; align-items:center;}
-  input, select, button, textarea { padding:12px 14px; font-size:15px; border:1px solid var(--border-color);
-    border-radius:8px; background: rgba(255,255,255,0.92); color:#1c2434; }
-  textarea { width:100%; resize:vertical; min-height:60px; box-sizing:border-box;}
-  button { background: var(--primary); color:white; border:none; cursor:pointer; font-weight:bold;}
-  button:hover { background: var(--primary-hover); }
-  button:disabled { opacity:.5; cursor:not-allowed; }
-  .answer { white-space: pre-wrap; line-height:1.5; }
-  .sources { margin-top:14px; font-size:.9rem; color: var(--text-muted); }
-  .source-item { padding:6px 0; border-top: 1px solid var(--border-color); }
-  .status { font-size:.9rem; color: var(--text-muted); margin-top:8px;}
-  .loading { display:none; font-weight:600; margin:10px 0; text-align:center; background: rgba(45,90,143,.8); padding:10px; border-radius:8px;}
-</style>
+</script>
 </head>
-<body>
-<div class="container">
-  <header>
-    <h2>🤖 Gemma Sci/Tech RAG Assistant</h2>
-    <div id="statusBadge" class="badge">Checking status…</div>
+<body class="bg-[#090d16] text-slate-100 min-h-screen font-sans selection:bg-indigo-500 selection:text-white overflow-x-hidden relative">
+
+<div class="fixed inset-0 -z-20 pointer-events-none">
+  <img src="panarama-img.jpg" alt="Panorama Background" class="w-full h-full object-cover object-center scale-105 filter blur-[2px] opacity-40">
+  <div class="absolute inset-0 bg-gradient-to-br from-[#090d16]/90 via-[#090d16]/80 to-[#090d16]/95"></div>
+</div>
+
+<canvas id="bg-canvas" class="fixed top-0 left-0 w-screen h-screen -z-10 pointer-events-none"></canvas>
+
+<div class="max-w-4xl mx-auto my-12 p-8 bg-slate-900/75 backdrop-blur-xl rounded-3xl border border-white/10 shadow-[0_20px_50px_rgba(0,0,0,0.5)] relative z-10">
+  
+  <header class="flex justify-between items-center border-b border-white/10 pb-5 mb-8 flex-wrap gap-4">
+    <h2 class="text-2xl md:text-3xl font-bold tracking-tight bg-gradient-to-r from-white via-slate-100 to-slate-400 bg-clip-text text-transparent">
+      🤖 Gemma Sci/Tech RAG Assistant
+    </h2>
+    <div id="statusBadge" class="bg-indigo-500/15 text-indigo-400 px-4 py-2 rounded-full font-semibold text-xs md:text-sm border border-indigo-500/30">
+      Checking status…
+    </div>
   </header>
 
-  <div class="panel">
-    <h3 style="margin-top:0;">1. Ingest AG News (Sci/Tech only)</h3>
-    <p class="status">Pulls rows directly from Hugging Face's <code>ag_news</code> dataset (label = Sci/Tech), chunks them with LlamaIndex, embeds them, and stores vectors in ChromaDB.</p>
-    <div class="row">
-      <select id="splitSelect">
-        <option value="test">test split (7.6k rows)</option>
-        <option value="train">train split (120k rows)</option>
+  <div class="bg-white/[0.02] p-6 rounded-2xl border border-white/10 mb-6 transition-all duration-200 hover:border-white/20">
+    <h3 class="mt-0 font-semibold text-lg text-slate-200">1. Ingest AG News (Sci/Tech only)</h3>
+    <p class="text-sm text-slate-400 mt-2 leading-relaxed">
+      Pulls rows directly from Hugging Face's <code class="text-indigo-300 bg-indigo-500/10 px-1.5 py-0.5 rounded">ag_news</code> dataset (label = Sci/Tech), chunks them with LlamaIndex, embeds them, and stores vectors in ChromaDB.
+    </p>
+    <div class="flex gap-3.5 flex-wrap items-center mt-4">
+      <select id="splitSelect" class="bg-slate-950/60 text-slate-100 border border-white/10 px-4 py-3 rounded-xl text-sm focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 transition-all">
+        <option value="test" class="bg-slate-900">test split (7.6k rows)</option>
+        <option value="train" class="bg-slate-900">train split (120k rows)</option>
       </select>
-      <input type="number" id="limitInput" value="200" min="10" max="2000" style="width:100px" />
-      <button id="ingestBtn">Ingest Sci/Tech Articles</button>
+      <input type="number" id="limitInput" value="10" min="1" max="2000" class="w-28 bg-slate-950/60 text-slate-100 border border-white/10 px-4 py-3 rounded-xl text-sm focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/25 transition-all" />
+      <button id="ingestBtn" class="bg-indigo-600 hover:bg-indigo-500 active:translate-y-0.5 text-white font-semibold px-5 py-3 rounded-xl text-sm shadow-lg shadow-indigo-600/30 transition-all cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none disabled:shadow-none">
+        Ingest Sci/Tech Articles
+      </button>
     </div>
-    <div id="ingestLoading" class="loading">⏳ Fetching from Hugging Face and embedding…</div>
-    <div id="ingestResult" class="status"></div>
+    <div id="ingestLoading" class="hidden font-semibold my-3 text-center bg-indigo-500/15 text-indigo-400 p-3 rounded-xl border border-indigo-500/30 text-sm">
+      ⏳ Fetching from Hugging Face and embedding (free tier pacing enabled)…
+    </div>
+    <div id="ingestResult" class="text-sm text-slate-400 mt-3"></div>
   </div>
 
-  <div class="panel">
-    <h3 style="margin-top:0;">2. Ask the RAG assistant</h3>
-    <textarea id="questionInput" placeholder="e.g. What are the recent developments in AI chips mentioned in these articles?"></textarea>
-    <div class="row" style="margin-top:10px;">
-      <button id="askBtn">Ask Gemma</button>
+  <div class="bg-white/[0.02] p-6 rounded-2xl border border-white/10 transition-all duration-200 hover:border-white/20">
+    <h3 class="mt-0 font-semibold text-lg text-slate-200 mb-3">2. Ask the RAG assistant</h3>
+    <textarea id="questionInput" placeholder="e.g. What are the recent developments in AI chips mentioned in these articles?" class="w-full bg-slate-950/60 text-slate-100 border border-white/10 p-4 rounded-xl text-sm focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/25 transition-all resize-y min-h-[80px] box-border"></textarea>
+    <div class="flex gap-3.5 flex-wrap items-center mt-3">
+      <button id="askBtn" class="bg-indigo-600 hover:bg-indigo-500 active:translate-y-0.5 text-white font-semibold px-5 py-3 rounded-xl text-sm shadow-lg shadow-indigo-600/30 transition-all cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none disabled:shadow-none">
+        Ask Gemma
+      </button>
     </div>
-    <div id="queryLoading" class="loading">⏳ Retrieving context and asking Gemma…</div>
-    <div id="answerBox" class="panel" style="display:none;">
-      <div class="answer" id="answerText"></div>
-      <div class="sources" id="sourcesBox"></div>
+    <div id="queryLoading" class="hidden font-semibold my-3 text-center bg-indigo-500/15 text-indigo-400 p-3 rounded-xl border border-indigo-500/30 text-sm">
+      ⏳ Retrieving context and asking Gemma…
+    </div>
+    <div id="answerBox" class="hidden bg-white/[0.02] p-6 rounded-xl border border-white/10 mt-5">
+      <div class="answer whitespace-pre-wrap leading-relaxed text-slate-200" id="answerText"></div>
+      <div class="sources mt-4 text-sm text-slate-400" id="sourcesBox"></div>
     </div>
   </div>
+
 </div>
 
 <script>
+  // Background Interactive Geometric Rectangles Animation Engine
+  const canvas = document.getElementById('bg-canvas');
+  const ctx = canvas.getContext('2d');
+
+  let width, height;
+  function resizeCanvas() {
+    width = canvas.width = window.innerWidth;
+    height = canvas.height = window.innerHeight;
+  }
+  window.addEventListener('resize', resizeCanvas);
+  resizeCanvas();
+
+  const mouse = { x: -1000, y: -1000, targetX: -1000, targetY: -1000 };
+  window.addEventListener('mousemove', (e) => {
+    mouse.targetX = e.clientX;
+    mouse.targetY = e.clientY;
+  });
+
+  // Generate geometric rectangles across different z-indices
+  const rectCount = 22;
+  const rectangles = [];
+  const palette = ['rgba(99, 102, 241, 0.12)', 'rgba(168, 85, 247, 0.12)', 'rgba(56, 189, 248, 0.10)', 'rgba(255, 255, 255, 0.03)'];
+  const borderPalette = ['rgba(99, 102, 241, 0.3)', 'rgba(168, 85, 247, 0.3)', 'rgba(56, 189, 248, 0.25)', 'rgba(255, 255, 255, 0.08)'];
+
+  for (let i = 0; i < rectCount; i++) {
+    rectangles.push({
+      x: Math.random() * width,
+      y: Math.random() * height,
+      w: 80 + Math.random() * 220,
+      h: 80 + Math.random() * 220,
+      vx: (Math.random() - 0.5) * 0.3,
+      vy: (Math.random() - 0.5) * 0.3,
+      z: Math.random() * 3 + 0.5, // Z-index depth layer factor
+      color: palette[Math.floor(Math.random() * palette.length)],
+      borderColor: borderPalette[Math.floor(Math.random() * borderPalette.length)],
+      angle: (Math.random() - 0.5) * 0.4,
+      vAngle: (Math.random() - 0.5) * 0.002
+    });
+  }
+
+  function animate() {
+    ctx.clearRect(0, 0, width, height);
+
+    // Smooth mouse interpolation (lerp)
+    mouse.x += (mouse.targetX - mouse.x) * 0.05;
+    mouse.y += (mouse.targetY - mouse.y) * 0.05;
+
+    rectangles.forEach(r => {
+      // Natural drifting motion
+      r.x += r.vx;
+      r.y += r.vy;
+      r.angle += r.vAngle;
+
+      // Wrap boundaries
+      if (r.x < -300) r.x = width + 100;
+      if (r.x > width + 300) r.x = -100;
+      if (r.y < -300) r.y = height + 100;
+      if (r.y > height + 300) r.y = -100;
+
+      // Mouse hover offset repulsion based on Z depth layer
+      const dx = mouse.x - (r.x + r.w / 2);
+      const dy = mouse.y - (r.y + r.h / 2);
+      const dist = Math.sqrt(dx * dx + dy * dy);
+      
+      let hoverOffsetX = 0;
+      let hoverOffsetY = 0;
+      const hoverRadius = 250;
+
+      if (dist < hoverRadius) {
+        const force = (1 - dist / hoverRadius) * 25 * r.z;
+        hoverOffsetX = -(dx / dist) * force;
+        hoverOffsetY = -(dy / dist) * force;
+      }
+
+      ctx.save();
+      ctx.translate(r.x + r.w / 2 + hoverOffsetX, r.y + r.h / 2 + hoverOffsetY);
+      ctx.rotate(r.angle);
+
+      ctx.fillStyle = r.color;
+      ctx.strokeStyle = r.borderColor;
+      ctx.lineWidth = 1.5;
+
+      ctx.beginPath();
+      ctx.rect(-r.w / 2, -r.h / 2, r.w, r.h);
+      ctx.fill();
+      ctx.stroke();
+
+      ctx.restore();
+    });
+
+    requestAnimationFrame(animate);
+  }
+  animate();
+
+  // App UI Event Handlers
   const statusBadge = document.getElementById('statusBadge');
   const ingestBtn = document.getElementById('ingestBtn');
   const ingestLoading = document.getElementById('ingestLoading');
@@ -134,8 +234,8 @@
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Query failed');
       answerText.textContent = data.answer;
-      sourcesBox.innerHTML = '<strong>Sources:</strong>' + data.sources.map(
-        (s, i) => `<div class="source-item">[${i + 1}] ${s.title || s.sourceId}</div>`
+      sourcesBox.innerHTML = '<strong class="text-slate-200">Sources:</strong>' + data.sources.map(
+        (s, i) => `<div class="source-item pt-2 mt-2 border-t border-white/10 text-slate-400">[${i + 1}] ${s.title || s.sourceId}</div>`
       ).join('');
       answerBox.style.display = 'block';
     } catch (err) {
