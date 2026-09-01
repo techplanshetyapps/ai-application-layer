@@ -6,6 +6,9 @@
 <title>Gemma Sci/Tech RAG Assistant — AG News</title>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <script src="https://cdn.tailwindcss.com"></script>
+<!-- GSAP & Draggable from NPM / CDN ecosystem -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/Draggable.min.js"></script>
 <script>
   tailwind.config = {
     theme: {
@@ -17,15 +20,22 @@
     }
   }
 </script>
+<style>
+  body, html { cursor: grab; cursor: -webkit-grab; }
+  body:active, html:active { cursor: grabbing; cursor: -webkit-grabbing; }
+  button, input, select, textarea, label, a { cursor: auto !important; }
+  input[type="text"], textarea, select { cursor: text !important; }
+  button { cursor: pointer !important; }
+</style>
 </head>
-<body class="bg-[#090d16] text-slate-100 min-h-screen font-sans selection:bg-indigo-500 selection:text-white overflow-x-hidden relative">
+<body class="bg-[#090d16] text-slate-100 min-h-screen font-sans selection:bg-indigo-500 selection:text-white overflow-x-hidden relative select-none">
 
-<div class="fixed inset-0 -z-20 pointer-events-none">
-  <img src="panarama-img.jpg" alt="Panorama Background" class="w-full h-full object-cover object-center scale-105 filter blur-[2px] opacity-40">
-  <div class="absolute inset-0 bg-gradient-to-br from-[#090d16]/90 via-[#090d16]/80 to-[#090d16]/95"></div>
+<div id="pano-container" class="fixed inset-0 -z-30 overflow-hidden w-full h-full">
+  <img id="pano-bg" src="panorama-img.jpg" alt="Panorama Background" class="absolute top-0 left-0 h-full w-[300vw] max-none object-cover opacity-35 mix-blend-luminosity select-none" style="will-change: transform;">
+  <div class="absolute inset-0 bg-[#090d16]/60 pointer-events-none"></div>
 </div>
 
-<canvas id="bg-canvas" class="fixed top-0 left-0 w-screen h-screen -z-10 pointer-events-none"></canvas>
+<canvas id="bg-canvas" class="fixed top-0 left-0 w-screen h-screen -z-20 pointer-events-none"></canvas>
 
 <div class="max-w-4xl mx-auto my-12 p-8 bg-slate-900/75 backdrop-blur-xl rounded-3xl border border-white/10 shadow-[0_20px_50px_rgba(0,0,0,0.5)] relative z-10">
   
@@ -49,7 +59,7 @@
         <option value="train" class="bg-slate-900">train split (120k rows)</option>
       </select>
       <input type="number" id="limitInput" value="10" min="1" max="2000" class="w-28 bg-slate-950/60 text-slate-100 border border-white/10 px-4 py-3 rounded-xl text-sm focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/25 transition-all" />
-      <button id="ingestBtn" class="bg-indigo-600 hover:bg-indigo-500 active:translate-y-0.5 text-white font-semibold px-5 py-3 rounded-xl text-sm shadow-lg shadow-indigo-600/30 transition-all cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none disabled:shadow-none">
+      <button id="ingestBtn" class="bg-indigo-600 hover:bg-indigo-500 active:translate-y-0.5 text-white font-semibold px-5 py-3 rounded-xl text-sm shadow-lg shadow-indigo-600/30 transition-all disabled:opacity-50 disabled:cursor-not-allowed">
         Ingest Sci/Tech Articles
       </button>
     </div>
@@ -63,7 +73,7 @@
     <h3 class="mt-0 font-semibold text-lg text-slate-200 mb-3">2. Ask the RAG assistant</h3>
     <textarea id="questionInput" placeholder="e.g. What are the recent developments in AI chips mentioned in these articles?" class="w-full bg-slate-950/60 text-slate-100 border border-white/10 p-4 rounded-xl text-sm focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/25 transition-all resize-y min-h-[80px] box-border"></textarea>
     <div class="flex gap-3.5 flex-wrap items-center mt-3">
-      <button id="askBtn" class="bg-indigo-600 hover:bg-indigo-500 active:translate-y-0.5 text-white font-semibold px-5 py-3 rounded-xl text-sm shadow-lg shadow-indigo-600/30 transition-all cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none disabled:shadow-none">
+      <button id="askBtn" class="bg-indigo-600 hover:bg-indigo-500 active:translate-y-0.5 text-white font-semibold px-5 py-3 rounded-xl text-sm shadow-lg shadow-indigo-600/30 transition-all disabled:opacity-50 disabled:cursor-not-allowed">
         Ask Gemma
       </button>
     </div>
@@ -79,7 +89,40 @@
 </div>
 
 <script>
-  // Background Interactive Geometric Rectangles Animation Engine
+  // Initialize GSAP Draggable for physics-powered 360 panorama control
+  gsap.registerPlugin(Draggable);
+
+  const panoBg = document.getElementById('pano-bg');
+
+  function updateBounds() {
+    const maxScroll = panoBg.offsetWidth - window.innerWidth;
+    return { minX: -maxScroll, maxX: 0 };
+  }
+
+  Draggable.create(panoBg, {
+    type: "x",
+    bounds: updateBounds(),
+    inertia: true,
+    cursor: "grab",
+    activeCursor: "grabbing",
+    onDrag: function() {
+      // Seamless wrap logic during drag
+      const maxScroll = panoBg.offsetWidth - window.innerWidth;
+      if (this.x > 0) {
+        gsap.set(panoBg, { x: -maxScroll + (this.x % maxScroll) });
+        this.update();
+      } else if (this.x < -maxScroll) {
+        gsap.set(panoBg, { x: this.x % maxScroll });
+        this.update();
+      }
+    }
+  });
+
+  window.addEventListener('resize', () => {
+    Draggable.get(panoBg).applyBounds(updateBounds());
+  });
+
+  // Background Canvas animation logic
   const canvas = document.getElementById('bg-canvas');
   const ctx = canvas.getContext('2d');
 
@@ -97,11 +140,10 @@
     mouse.targetY = e.clientY;
   });
 
-  // Generate geometric rectangles across different z-indices
   const rectCount = 22;
   const rectangles = [];
-  const palette = ['rgba(99, 102, 241, 0.12)', 'rgba(168, 85, 247, 0.12)', 'rgba(56, 189, 248, 0.10)', 'rgba(255, 255, 255, 0.03)'];
-  const borderPalette = ['rgba(99, 102, 241, 0.3)', 'rgba(168, 85, 247, 0.3)', 'rgba(56, 189, 248, 0.25)', 'rgba(255, 255, 255, 0.08)'];
+  const palette = ['rgba(210, 180, 140, 0.12)', 'rgba(188, 143, 143, 0.10)', 'rgba(222, 184, 135, 0.10)', 'rgba(244, 164, 96, 0.08)'];
+  const borderPalette = ['rgba(210, 180, 140, 0.3)', 'rgba(188, 143, 143, 0.25)', 'rgba(222, 184, 135, 0.25)', 'rgba(244, 164, 96, 0.2)'];
 
   for (let i = 0; i < rectCount; i++) {
     rectangles.push({
@@ -111,7 +153,7 @@
       h: 80 + Math.random() * 220,
       vx: (Math.random() - 0.5) * 0.3,
       vy: (Math.random() - 0.5) * 0.3,
-      z: Math.random() * 3 + 0.5, // Z-index depth layer factor
+      z: Math.random() * 3 + 0.5,
       color: palette[Math.floor(Math.random() * palette.length)],
       borderColor: borderPalette[Math.floor(Math.random() * borderPalette.length)],
       angle: (Math.random() - 0.5) * 0.4,
@@ -122,23 +164,19 @@
   function animate() {
     ctx.clearRect(0, 0, width, height);
 
-    // Smooth mouse interpolation (lerp)
     mouse.x += (mouse.targetX - mouse.x) * 0.05;
     mouse.y += (mouse.targetY - mouse.y) * 0.05;
 
     rectangles.forEach(r => {
-      // Natural drifting motion
       r.x += r.vx;
       r.y += r.vy;
       r.angle += r.vAngle;
 
-      // Wrap boundaries
       if (r.x < -300) r.x = width + 100;
       if (r.x > width + 300) r.x = -100;
       if (r.y < -300) r.y = height + 100;
       if (r.y > height + 300) r.y = -100;
 
-      // Mouse hover offset repulsion based on Z depth layer
       const dx = mouse.x - (r.x + r.w / 2);
       const dy = mouse.y - (r.y + r.h / 2);
       const dist = Math.sqrt(dx * dx + dy * dy);
@@ -173,7 +211,6 @@
   }
   animate();
 
-  // App UI Event Handlers
   const statusBadge = document.getElementById('statusBadge');
   const ingestBtn = document.getElementById('ingestBtn');
   const ingestLoading = document.getElementById('ingestLoading');
