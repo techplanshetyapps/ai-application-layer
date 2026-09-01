@@ -1,16 +1,17 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="dark">
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Gemma Sci/Tech RAG Assistant — AG News</title>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <script src="https://cdn.tailwindcss.com"></script>
-<!-- GSAP & Draggable from NPM / CDN ecosystem -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/Draggable.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 <script>
   tailwind.config = {
+    darkMode: 'class',
     theme: {
       extend: {
         fontFamily: {
@@ -24,65 +25,72 @@
   body, html { cursor: grab; cursor: -webkit-grab; }
   body:active, html:active { cursor: grabbing; cursor: -webkit-grabbing; }
   button, input, select, textarea, label, a { cursor: auto !important; }
-  input[type="text"], textarea, select { cursor: text !important; }
+  input[type="text"], input[type="number"], textarea, select { cursor: text !important; }
   button { cursor: pointer !important; }
 </style>
 </head>
-<body class="bg-[#090d16] text-slate-100 min-h-screen font-sans selection:bg-indigo-500 selection:text-white overflow-x-hidden relative select-none">
+<body class="bg-[#040712] text-slate-100 dark:bg-[#040712] dark:text-slate-100 bg-slate-50 text-slate-900 min-h-screen font-sans selection:bg-indigo-500 selection:text-white overflow-x-hidden relative select-none transition-colors duration-300">
 
 <div id="pano-container" class="fixed inset-0 -z-30 overflow-hidden w-full h-full">
-  <img id="pano-bg" src="panorama-img.jpg" alt="Panorama Background" class="absolute top-0 left-0 h-full w-[300vw] max-none object-cover opacity-35 mix-blend-luminosity select-none" style="will-change: transform;">
-  <div class="absolute inset-0 bg-[#090d16]/60 pointer-events-none"></div>
+  <img id="pano-bg" src="panorama-img.jpg" alt="Panorama Background" class="absolute top-0 left-0 h-full w-[300vw] max-none object-cover opacity-50 mix-blend-luminosity select-none" style="will-change: transform;">
+  <div id="pano-overlay" class="absolute inset-0 bg-[#040712]/85 dark:bg-[#040712]/85 bg-slate-100/75 pointer-events-none transition-colors duration-300"></div>
 </div>
 
 <canvas id="bg-canvas" class="fixed top-0 left-0 w-screen h-screen -z-20 pointer-events-none"></canvas>
 
-<div class="max-w-4xl mx-auto my-12 p-8 bg-slate-900/75 backdrop-blur-xl rounded-3xl border border-white/10 shadow-[0_20px_50px_rgba(0,0,0,0.5)] relative z-10">
+<div class="max-w-4xl mx-auto my-12 p-8 bg-slate-900/90 dark:bg-slate-900/90 bg-white/95 backdrop-blur-2xl rounded-3xl border border-indigo-500/30 dark:border-indigo-500/30 border-slate-300 shadow-[0_20px_50px_rgba(0,0,0,0.35)] relative z-10 transition-colors duration-300">
   
-  <header class="flex justify-between items-center border-b border-white/10 pb-5 mb-8 flex-wrap gap-4">
-    <h2 class="text-2xl md:text-3xl font-bold tracking-tight bg-gradient-to-r from-white via-slate-100 to-slate-400 bg-clip-text text-transparent">
-      🤖 Gemma Sci/Tech RAG Assistant
+  <header class="flex justify-between items-center border-b border-white/15 dark:border-white/15 border-slate-200 pb-5 mb-8 flex-wrap gap-4">
+    <h2 class="text-2xl md:text-3xl font-bold tracking-tight bg-gradient-to-r from-indigo-400 via-indigo-200 to-cyan-400 dark:from-indigo-400 dark:via-indigo-200 dark:to-cyan-400 from-indigo-600 via-indigo-500 to-violet-700 bg-clip-text text-transparent">
+      Gemma Sci/Tech RAG Assistant
     </h2>
-    <div id="statusBadge" class="bg-indigo-500/15 text-indigo-400 px-4 py-2 rounded-full font-semibold text-xs md:text-sm border border-indigo-500/30">
-      Checking status…
+    <div class="flex items-center gap-3">
+      <div id="statusBadge" class="bg-indigo-500/25 dark:bg-indigo-500/25 bg-indigo-100 text-indigo-300 dark:text-indigo-300 text-indigo-700 px-4 py-2 rounded-full font-bold text-xs md:text-sm border border-indigo-500/50">
+        Checking status…
+      </div>
+      <button id="themeToggleBtn" class="bg-white/10 dark:bg-white/10 bg-slate-200 hover:bg-white/20 dark:hover:bg-white/20 hover:bg-slate-300 text-slate-200 dark:text-slate-200 text-slate-800 p-2.5 rounded-xl border border-white/20 dark:border-white/20 border-slate-300 transition-all text-sm font-semibold flex items-center justify-center shadow-md" aria-label="Toggle Theme">
+        <span id="themeIcon">
+          <i class="bi bi-circle-half"></i>
+        </span>
+      </button>
     </div>
   </header>
 
-  <div class="bg-white/[0.02] p-6 rounded-2xl border border-white/10 mb-6 transition-all duration-200 hover:border-white/20">
-    <h3 class="mt-0 font-semibold text-lg text-slate-200">1. Ingest AG News (Sci/Tech only)</h3>
-    <p class="text-sm text-slate-400 mt-2 leading-relaxed">
-      Pulls rows directly from Hugging Face's <code class="text-indigo-300 bg-indigo-500/10 px-1.5 py-0.5 rounded">ag_news</code> dataset (label = Sci/Tech), chunks them with LlamaIndex, embeds them, and stores vectors in ChromaDB.
+  <div class="bg-white/[0.06] dark:bg-white/[0.06] bg-white p-6 rounded-2xl border border-white/20 dark:border-white/20 border-slate-200 mb-6 transition-all duration-200 hover:border-indigo-500/40 shadow-sm">
+    <h3 class="mt-0 font-bold text-lg text-slate-100 dark:text-slate-100 text-slate-900">1. Ingest AG News (Sci/Tech only)</h3>
+    <p class="text-sm text-slate-300 dark:text-slate-300 text-slate-600 mt-2 leading-relaxed">
+      Pulls rows directly from Hugging Face's <code class="text-indigo-300 dark:text-indigo-300 text-indigo-600 bg-indigo-500/25 dark:bg-indigo-500/25 bg-indigo-100 px-1.5 py-0.5 rounded font-bold">ag_news</code> dataset (label = Sci/Tech), chunks them with LlamaIndex, embeds them, and stores vectors in ChromaDB.
     </p>
     <div class="flex gap-3.5 flex-wrap items-center mt-4">
-      <select id="splitSelect" class="bg-slate-950/60 text-slate-100 border border-white/10 px-4 py-3 rounded-xl text-sm focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 transition-all">
-        <option value="test" class="bg-slate-900">test split (7.6k rows)</option>
-        <option value="train" class="bg-slate-900">train split (120k rows)</option>
+      <select id="splitSelect" class="bg-slate-950/90 dark:bg-slate-950/90 bg-white text-slate-100 dark:text-slate-100 text-slate-900 font-medium border border-white/25 dark:border-white/25 border-slate-300 px-4 py-3 rounded-xl text-sm focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/40 transition-all shadow-sm">
+        <option value="test" class="bg-slate-900 dark:bg-slate-900 bg-white text-slate-100 dark:text-slate-100 text-slate-900">test split (7.6k rows)</option>
+        <option value="train" class="bg-slate-900 dark:bg-slate-900 bg-white text-slate-100 dark:text-slate-100 text-slate-900">train split (120k rows)</option>
       </select>
-      <input type="number" id="limitInput" value="10" min="1" max="2000" class="w-28 bg-slate-950/60 text-slate-100 border border-white/10 px-4 py-3 rounded-xl text-sm focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/25 transition-all" />
-      <button id="ingestBtn" class="bg-indigo-600 hover:bg-indigo-500 active:translate-y-0.5 text-white font-semibold px-5 py-3 rounded-xl text-sm shadow-lg shadow-indigo-600/30 transition-all disabled:opacity-50 disabled:cursor-not-allowed">
+      <input type="number" id="limitInput" value="10" min="1" max="2000" class="w-28 bg-slate-950/90 dark:bg-slate-950/90 bg-white text-slate-100 dark:text-slate-100 text-slate-900 font-medium border border-white/25 dark:border-white/25 border-slate-300 px-4 py-3 rounded-xl text-sm focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/40 transition-all shadow-sm" />
+      <button id="ingestBtn" class="bg-indigo-600 hover:bg-indigo-500 active:translate-y-0.5 text-white font-bold px-5 py-3 rounded-xl text-sm shadow-lg shadow-indigo-600/50 transition-all disabled:opacity-50 disabled:cursor-not-allowed">
         Ingest Sci/Tech Articles
       </button>
     </div>
-    <div id="ingestLoading" class="hidden font-semibold my-3 text-center bg-indigo-500/15 text-indigo-400 p-3 rounded-xl border border-indigo-500/30 text-sm">
+    <div id="ingestLoading" class="hidden font-bold my-3 text-center bg-indigo-500/20 text-indigo-300 p-3 rounded-xl border border-indigo-500/40 text-sm">
       ⏳ Fetching from Hugging Face and embedding (free tier pacing enabled)…
     </div>
-    <div id="ingestResult" class="text-sm text-slate-400 mt-3"></div>
+    <div id="ingestResult" class="text-sm text-indigo-300 dark:text-indigo-300 text-indigo-700 mt-3 font-semibold"></div>
   </div>
 
-  <div class="bg-white/[0.02] p-6 rounded-2xl border border-white/10 transition-all duration-200 hover:border-white/20">
-    <h3 class="mt-0 font-semibold text-lg text-slate-200 mb-3">2. Ask the RAG assistant</h3>
-    <textarea id="questionInput" placeholder="e.g. What are the recent developments in AI chips mentioned in these articles?" class="w-full bg-slate-950/60 text-slate-100 border border-white/10 p-4 rounded-xl text-sm focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/25 transition-all resize-y min-h-[80px] box-border"></textarea>
+  <div class="bg-white/[0.06] dark:bg-white/[0.06] bg-white p-6 rounded-2xl border border-white/20 dark:border-white/20 border-slate-200 transition-all duration-200 hover:border-indigo-500/40 shadow-sm">
+    <h3 class="mt-0 font-bold text-lg text-slate-100 dark:text-slate-100 text-slate-900 mb-3">2. Ask the RAG assistant</h3>
+    <textarea id="questionInput" placeholder="e.g. What are the recent developments in AI chips mentioned in these articles?" class="w-full bg-slate-950/90 dark:bg-slate-950/90 bg-white text-slate-100 dark:text-slate-100 text-slate-900 border border-white/25 dark:border-white/25 border-slate-300 p-4 rounded-xl text-sm focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/40 transition-all resize-y min-h-[80px] box-border placeholder:text-slate-400 font-medium shadow-sm"></textarea>
     <div class="flex gap-3.5 flex-wrap items-center mt-3">
-      <button id="askBtn" class="bg-indigo-600 hover:bg-indigo-500 active:translate-y-0.5 text-white font-semibold px-5 py-3 rounded-xl text-sm shadow-lg shadow-indigo-600/30 transition-all disabled:opacity-50 disabled:cursor-not-allowed">
+      <button id="askBtn" class="bg-indigo-600 hover:bg-indigo-500 active:translate-y-0.5 text-white font-bold px-5 py-3 rounded-xl text-sm shadow-lg shadow-indigo-600/50 transition-all disabled:opacity-50 disabled:cursor-not-allowed">
         Ask Gemma
       </button>
     </div>
-    <div id="queryLoading" class="hidden font-semibold my-3 text-center bg-indigo-500/15 text-indigo-400 p-3 rounded-xl border border-indigo-500/30 text-sm">
+    <div id="queryLoading" class="hidden font-bold my-3 text-center bg-indigo-500/20 text-indigo-300 p-3 rounded-xl border border-indigo-500/40 text-sm">
       ⏳ Retrieving context and asking Gemma…
     </div>
-    <div id="answerBox" class="hidden bg-white/[0.02] p-6 rounded-xl border border-white/10 mt-5">
-      <div class="answer whitespace-pre-wrap leading-relaxed text-slate-200" id="answerText"></div>
-      <div class="sources mt-4 text-sm text-slate-400" id="sourcesBox"></div>
+    <div id="answerBox" class="hidden bg-white/[0.06] dark:bg-white/[0.06] bg-slate-50 p-6 rounded-xl border border-white/20 dark:border-white/20 border-slate-200 mt-5 shadow-inner">
+      <div class="answer whitespace-pre-wrap leading-relaxed text-slate-100 dark:text-slate-100 text-slate-900 font-medium" id="answerText"></div>
+      <div class="sources mt-4 text-sm text-slate-300 dark:text-slate-300 text-slate-700" id="sourcesBox"></div>
     </div>
   </div>
 
@@ -106,7 +114,6 @@
     cursor: "grab",
     activeCursor: "grabbing",
     onDrag: function() {
-      // Seamless wrap logic during drag
       const maxScroll = panoBg.offsetWidth - window.innerWidth;
       if (this.x > 0) {
         gsap.set(panoBg, { x: -maxScroll + (this.x % maxScroll) });
@@ -122,7 +129,7 @@
     Draggable.get(panoBg).applyBounds(updateBounds());
   });
 
-  // Background Canvas animation logic
+  // Background Canvas animation logic with High Contrast Palettes (Dark vs Light)
   const canvas = document.getElementById('bg-canvas');
   const ctx = canvas.getContext('2d');
 
@@ -140,10 +147,16 @@
     mouse.targetY = e.clientY;
   });
 
-  const rectCount = 22;
+  const rectCount = 26;
   const rectangles = [];
-  const palette = ['rgba(210, 180, 140, 0.12)', 'rgba(188, 143, 143, 0.10)', 'rgba(222, 184, 135, 0.10)', 'rgba(244, 164, 96, 0.08)'];
-  const borderPalette = ['rgba(210, 180, 140, 0.3)', 'rgba(188, 143, 143, 0.25)', 'rgba(222, 184, 135, 0.25)', 'rgba(244, 164, 96, 0.2)'];
+
+  // High contrast vibrant dark palette
+  const darkPalette = ['rgba(99, 102, 241, 0.28)', 'rgba(139, 92, 246, 0.25)', 'rgba(14, 165, 233, 0.25)', 'rgba(236, 72, 153, 0.20)'];
+  const darkBorderPalette = ['rgba(99, 102, 241, 0.7)', 'rgba(139, 92, 246, 0.65)', 'rgba(14, 165, 233, 0.65)', 'rgba(236, 72, 153, 0.55)'];
+
+  // High contrast vibrant second light palette (Sophisticated Indigo/Amber/Cyan accents)
+  const lightPalette = ['rgba(79, 70, 229, 0.18)', 'rgba(147, 51, 234, 0.15)', 'rgba(2, 132, 199, 0.16)', 'rgba(217, 70, 239, 0.14)'];
+  const lightBorderPalette = ['rgba(79, 70, 229, 0.5)', 'rgba(147, 51, 234, 0.45)', 'rgba(2, 132, 199, 0.45)', 'rgba(217, 70, 239, 0.4)'];
 
   for (let i = 0; i < rectCount; i++) {
     rectangles.push({
@@ -151,23 +164,25 @@
       y: Math.random() * height,
       w: 80 + Math.random() * 220,
       h: 80 + Math.random() * 220,
-      vx: (Math.random() - 0.5) * 0.3,
-      vy: (Math.random() - 0.5) * 0.3,
+      vx: (Math.random() - 0.5) * 0.4,
+      vy: (Math.random() - 0.5) * 0.4,
       z: Math.random() * 3 + 0.5,
-      color: palette[Math.floor(Math.random() * palette.length)],
-      borderColor: borderPalette[Math.floor(Math.random() * borderPalette.length)],
       angle: (Math.random() - 0.5) * 0.4,
-      vAngle: (Math.random() - 0.5) * 0.002
+      vAngle: (Math.random() - 0.5) * 0.0025
     });
   }
 
   function animate() {
     ctx.clearRect(0, 0, width, height);
 
-    mouse.x += (mouse.targetX - mouse.x) * 0.05;
-    mouse.y += (mouse.targetY - mouse.y) * 0.05;
+    mouse.x += (mouse.targetX - mouse.x) * 0.06;
+    mouse.y += (mouse.targetY - mouse.y) * 0.06;
 
-    rectangles.forEach(r => {
+    const isDark = document.documentElement.classList.contains('dark');
+    const currentPalette = isDark ? darkPalette : lightPalette;
+    const currentBorderPalette = isDark ? darkBorderPalette : lightBorderPalette;
+
+    rectangles.forEach((r, idx) => {
       r.x += r.vx;
       r.y += r.vy;
       r.angle += r.vAngle;
@@ -183,10 +198,10 @@
       
       let hoverOffsetX = 0;
       let hoverOffsetY = 0;
-      const hoverRadius = 250;
+      const hoverRadius = 260;
 
       if (dist < hoverRadius) {
-        const force = (1 - dist / hoverRadius) * 25 * r.z;
+        const force = (1 - dist / hoverRadius) * 32 * r.z;
         hoverOffsetX = -(dx / dist) * force;
         hoverOffsetY = -(dy / dist) * force;
       }
@@ -195,9 +210,9 @@
       ctx.translate(r.x + r.w / 2 + hoverOffsetX, r.y + r.h / 2 + hoverOffsetY);
       ctx.rotate(r.angle);
 
-      ctx.fillStyle = r.color;
-      ctx.strokeStyle = r.borderColor;
-      ctx.lineWidth = 1.5;
+      ctx.fillStyle = currentPalette[idx % currentPalette.length];
+      ctx.strokeStyle = currentBorderPalette[idx % currentBorderPalette.length];
+      ctx.lineWidth = 2.5;
 
       ctx.beginPath();
       ctx.rect(-r.w / 2, -r.h / 2, r.w, r.h);
@@ -210,6 +225,34 @@
     requestAnimationFrame(animate);
   }
   animate();
+
+  // Day/Night Theme Switcher Logic with Second Light Palette Support
+  const themeToggleBtn = document.getElementById('themeToggleBtn');
+  const themeIcon = document.getElementById('themeIcon');
+
+  function setTheme(isDark) {
+    if (isDark) {
+      document.documentElement.classList.add('dark');
+      themeIcon.innerHTML = '<i class="bi bi-circle-half"></i>';
+      localStorage.setItem('theme', 'dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+      themeIcon.innerHTML = '<i class="bi bi-circle-half"></i>';
+      localStorage.setItem('theme', 'light');
+    }
+  }
+
+  const savedTheme = localStorage.getItem('theme');
+  if (savedTheme === 'light') {
+    setTheme(false);
+  } else {
+    setTheme(true);
+  }
+
+  themeToggleBtn.addEventListener('click', () => {
+    const isDark = document.documentElement.classList.contains('dark');
+    setTheme(!isDark);
+  });
 
   const statusBadge = document.getElementById('statusBadge');
   const ingestBtn = document.getElementById('ingestBtn');
@@ -271,8 +314,8 @@
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Query failed');
       answerText.textContent = data.answer;
-      sourcesBox.innerHTML = '<strong class="text-slate-200">Sources:</strong>' + data.sources.map(
-        (s, i) => `<div class="source-item pt-2 mt-2 border-t border-white/10 text-slate-400">[${i + 1}] ${s.title || s.sourceId}</div>`
+      sourcesBox.innerHTML = '<strong class="text-slate-100 dark:text-slate-100 text-slate-900 font-bold">Sources:</strong>' + data.sources.map(
+        (s, i) => `<div class="source-item pt-2 mt-2 border-t border-white/15 dark:border-white/15 border-slate-200 text-slate-300 dark:text-slate-300 text-slate-700 font-medium">[${i + 1}] ${s.title || s.sourceId}</div>`
       ).join('');
       answerBox.style.display = 'block';
     } catch (err) {
